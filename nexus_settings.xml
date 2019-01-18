@@ -11,7 +11,7 @@
   <servers>
     <server>
       <id>nexus</id>
-      <username>admin</username>
+      <username>gpte</username>
       <password>redhat</password>
     </server>
   </servers>
