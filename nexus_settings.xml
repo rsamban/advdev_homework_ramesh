@@ -10,7 +10,7 @@
   </mirrors>
   <servers>
     <server>
-      <id>nexus</id>
+      <id>Nexus</id>
       <username>gpte</username>
       <password>redhat</password>
     </server>
