@@ -282,6 +282,7 @@
       <id>nexus</id>
       <name>Nexus Repository</name>
       <url>http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases</url>
+      <layout>default</layout>
     </repository>
   </distributionManagement>
 </project>
