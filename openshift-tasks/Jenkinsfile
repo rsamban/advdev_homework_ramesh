@@ -22,7 +22,7 @@
       def version = getVersionFromPom("pom.xml")
 
       // TBD Set the tag for the development image: version + build number
-      def devTag  = "29d1-${version}.${BUILD_NUMBER}"
+      def devTag  = "${version}.${BUILD_NUMBER}"
       // Set the tag for the production image: version
       def prodTag = "${version}"
 
@@ -76,7 +76,9 @@
       // Deploy the built image to the Development Environment.
       stage('Deploy to Dev') {
         echo "Deploying container image to Development Project"
+        sh "oc set env dc/tasks VERSION=\"${devTag} (tasks-dev)\" -n 29d1-tasks-dev"
         sh "oc set image dc/tasks tasks=docker-registry.default.svc:5000/29d1-tasks-dev/tasks:${devTag} -n 29d1-tasks-dev"
+
 
         sh "oc delete configmap tasks-config -n 29d1-tasks-dev --ignore-not-found=true"
         sh "oc create configmap tasks-config --from-file=./configuration/application-users.properties \
@@ -115,6 +117,8 @@
       def activeApp = ""
 
       stage('Blue/Green Production Deployment') {
+        sh "oc set env dc/tasks-blue VERSION=\"${prodTag} (tasks-blue)\" -n 29d1-tasks-prod"
+        sh "oc set env dc/tasks-green VERSION=\"${prodTag} (tasks-green)\" -n 29d1-tasks-prod"
         // TBD: Determine which application is active
         //      Set Image, Set VERSION
         //      Deploy into the other application
