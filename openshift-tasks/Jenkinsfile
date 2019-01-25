@@ -60,8 +60,9 @@
         echo "Publish to Nexus"
         // TBD: Publish to Nexus
         sh "${mvnCmd} deploy -DskipTests=true \
-          -DaltDeploymentRepository=nexus-custom::default::http://nexus3.29d1-nexus.svc.cluster.local:8081/repository/releases"
-          //-DaltDeploymentRepository=nexus::default::http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases"
+          -DaltDeploymentRepository=nexus::default::http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases"
+          //-DaltDeploymentRepository=nexus-custom::default::http://nexus3.29d1-nexus.svc.cluster.local:8081/repository/releases"
+
       }
 
       // Build the OpenShift Image in OpenShift and tag it.
@@ -98,14 +99,15 @@
         echo "Copy image to Nexus container registry"
 
         // TBD: Copy image to Nexus container registry
+/*
         sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) \
             --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/29d1-tasks-dev/tasks:${devTag} \
             docker://nexus-registry.29d1-nexus.svc.cluster.local:5000/tasks:${devTag}"
-            /*
+  */
         sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) \
-            --dest-creds gpte:redhat docker://docker-registry.default.svc.cluster.local:5000/29d1-tasks-dev/tasks:${devTag} \
+            --dest-creds admin:redhat docker://docker-registry.default.svc.cluster.local:5000/29d1-tasks-dev/tasks:${devTag} \
             docker://nexus-registry.gpte-hw-cicd.svc.cluster.local:5000/tasks:${devTag}"
-            */
+
         openshiftTag alias: 'false', destStream: 'tasks', destTag: prodTag, destinationNamespace: '29d1-tasks-dev', namespace: '29d1-tasks-dev', srcStream: 'tasks', srcTag: devTag, verbose: 'false'
 
         // TBD: Tag the built image with the production tag.
