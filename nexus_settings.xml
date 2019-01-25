@@ -14,10 +14,5 @@
       <username>admin</username>
       <password>redhat</password>
     </server>
-    <server>
-      <id>nexus-custom</id>
-      <username>admin</username>
-      <password>admin123</password>
-    </server>
   </servers>
 </settings>
