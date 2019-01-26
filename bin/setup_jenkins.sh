@@ -62,13 +62,40 @@ for build in ${builds[@]}; do
 done
 if [[ ${create_build} == "true" ]]; then
   echo "Creating build-conifg tasks-pipeline..."
-  oc new-app --template=eap71-basic-s2i \
-    --param APPLICATION_NAME=tasks-pipeline \
-    --param SOURCE_REPOSITORY_URL=${REPO} \
-    --param SOURCE_REPOSITORY_REF=master \
-    --param CONTEXT_DIR=openshift-tasks \
-    --param MAVEN_MIRROR_URL=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public \
-    -n ${GUID}-jenkins
+echo "apiVersion: v1
+items:
+- kind: "BuildConfig"
+  apiVersion: "v1"
+  metadata:
+    name: "tasks-pipeline"
+  spec:
+    source:
+      type: "Git"
+      git:
+        uri: ${REPO}
+      contextDir: openshift-tasks
+    strategy:
+      type: "JenkinsPipeline"
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: Jenkinsfile
+        env:
+        - name: GUID
+          value: ${GUID}
+        - name: REPO
+          value: ${REPO}
+        - name: CLUSTER
+          value: ${CLUSTER}
+
+kind: List
+metadata: []" | oc create -f - -n 29d1-jenkins
+
+#  oc new-app --template=eap71-basic-s2i \
+#    --param APPLICATION_NAME=tasks-pipeline \
+#    --param SOURCE_REPOSITORY_URL=${REPO} \
+#    --param SOURCE_REPOSITORY_REF=master \
+#    --param CONTEXT_DIR=openshift-tasks \
+#    --param MAVEN_MIRROR_URL=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public \
+#    -n ${GUID}-jenkins
 fi
 
 # Make sure that Jenkins is fully up and running before proceeding!
