@@ -1,4 +1,19 @@
 #!groovy
+podTemplate(
+  label: "jenkins-agent-appdev",
+  cloud: "openshift",
+  inheritFrom: "maven",
+  containers: [
+    containerTemplate(
+      name: "jnlp",
+      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
+      resourceRequestMemory: "1Gi",
+      resourceLimitMemory: "2Gi",
+      resourceRequestCpu: "1",
+      resourceLimitCpu: "2"
+    )
+  ]
+) {
   node('jenkins-agent-appdev') {
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
@@ -154,7 +169,7 @@
       }
     }
   }
-
+}
 
   // Convenience Functions to read variables from the pom.xml
   // Do not change anything below this line.
