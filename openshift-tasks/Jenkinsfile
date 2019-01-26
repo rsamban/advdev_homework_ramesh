@@ -23,7 +23,7 @@ podTemplate(
     stage('Checkout Source') {
       echo "Checkout from ${REPO}"
       //checkout scm
-      git ${REPO}
+      git "${REPO}"
       echo "Checkout from ${REPO} - Done"
 
     }
