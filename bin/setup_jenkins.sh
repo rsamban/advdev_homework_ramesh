@@ -55,20 +55,20 @@ fi
 # TBD
 create_build=true
 for build in ${builds[@]}; do
-  if [[ ${build} == tasks* ]]; then
+  if [[ ${build} == tasks-piepline* ]]; then
     create_build=false
     echo "Deployment tasks already exists, skipping..."
   fi
 done
 if [[ ${create_build} == "true" ]]; then
-  echo "Creating deployment tasks..."
+  echo "Creating build-conifg tasks-pipeline..."
   oc new-app --template=eap71-basic-s2i \
-    --param APPLICATION_NAME=tasks \
+    --param APPLICATION_NAME=tasks-pipeline \
     --param SOURCE_REPOSITORY_URL=${REPO} \
     --param SOURCE_REPOSITORY_REF=master \
     --param CONTEXT_DIR=openshift-tasks \
+    --param MAVEN_MIRROR_URL=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public \
     -n ${GUID}-jenkins
-    #--param MAVEN_MIRROR_URL=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public \
 fi
 
 # Make sure that Jenkins is fully up and running before proceeding!

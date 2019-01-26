@@ -36,25 +36,25 @@
       }
 
       // TBD: The next two stages should run in parallel
-
-      // Using Maven run the unit tests
-      stage('Unit Tests') {
-        echo "Running Unit Tests"
-        sh "${mvnCmd} test"
-        // TBD: Execute Unit Tests
+      stage('Parallel') {
+        // Using Maven run the unit tests
+        parallel firstBranch: {
+          stage('Unit Tests') {
+            echo "Running Unit Tests"
+            sh "${mvnCmd} test"
+          }
+        },secondBranch: {
+          // Using Maven to call SonarQube for Code Analysis
+          stage('Code Analysis') {
+            echo "Running Code Analysis"
+            def JOB_BASE_NAME="29d1-${groupId}-${artifactId}"
+            echo "JOB_BASE_NAME = ${JOB_BASE_NAME}"
+            // TBD: Execute Sonarqube Tests
+            sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.gpte-hw-cicd.svc.cluster.local:9000 \
+                -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+          }
+        }
       }
-
-
-      // Using Maven to call SonarQube for Code Analysis
-      stage('Code Analysis') {
-        echo "Running Code Analysis"
-        def JOB_BASE_NAME="29d1-${groupId}-${artifactId}"
-        echo "JOB_BASE_NAME = ${JOB_BASE_NAME}"
-        // TBD: Execute Sonarqube Tests
-        sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.gpte-hw-cicd.svc.cluster.local:9000 \
-            -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
-      }
-
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
         echo "Publish to Nexus"
