@@ -77,7 +77,7 @@ items:
     strategy:
       type: "JenkinsPipeline"
       jenkinsPipelineStrategy:
-        jenkinsfilePath: Jenkinsfile
+        jenkinsfilePath: Jenkinsfile_skopeo_pod
         env:
         - name: GUID
           value: ${GUID}
